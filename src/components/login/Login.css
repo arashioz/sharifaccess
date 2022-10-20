@@ -1,0 +1,73 @@
+.offscreen {
+  display: none;
+}
+
+.errmsg {
+  width: 20%;
+  padding: 10px;
+  margin: 0px auto;
+  border-radius: 10px;
+  background-color: rgba(233, 12, 12, 0.44);
+}
+
+.logo-container {
+  width: 150px;
+  height: 150px;
+  top: 18%;
+  left: 45.9%;
+  z-index: 100;
+  padding: 10px;
+  position: absolute;
+  backdrop-filter: blur(27px);
+  border-radius: 90px;
+}
+.logo {
+  width: 100%;
+  height: 100%;
+}
+.container {
+  background-image: url('../../static/sss.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: auto;
+  height: 100vh;
+  position: relative;
+}
+.form-container {
+  backdrop-filter: blur(25px);
+  border-radius: 20px;
+  margin: 10px;
+  position: absolute;
+  padding: 55px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+.form {
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  width: 20vh;
+}
+button {
+  border: 0px;
+  padding: 6px;
+  border-radius: 8px;
+}
+button:hover {
+  cursor: pointer;
+  box-shadow: 2px sienna;
+}
+* > input {
+  margin: 8px;
+}
+* > button {
+  width: 18vh;
+  margin: 15px auto;
+}
+h1 {
+  margin: 0 !important;
+  color: #ffff;
+}

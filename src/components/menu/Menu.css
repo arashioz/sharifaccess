@@ -1,0 +1,12 @@
+.links {
+  text-decoration: none;
+  color: black;
+}
+
+.tabs {
+  padding: 5px 25px;
+  border-radius: 8px;
+}
+.active {
+  background-color: rgba(218, 217, 217, 0.664);
+}

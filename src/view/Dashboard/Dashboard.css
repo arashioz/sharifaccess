@@ -1,0 +1,13 @@
+.main-container {
+  background-image: url('/src/static/seven.jpg');
+  background-size: cover;
+  padding: 40px;
+  height: 100vh;
+  max-height: 100vh;
+}
+.main {
+  border-radius: 10px;
+  background-color: rgba(213, 213, 213, 0.365);
+  backdrop-filter: blur(160px) brightness(50%);
+  max-height: 89vh;
+}
