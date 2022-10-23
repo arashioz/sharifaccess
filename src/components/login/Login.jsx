@@ -8,8 +8,8 @@ import logo from "../../static/logo2.png";
 import { Grid, TextField } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
-import Button from "@mui/material/Button";
-import { Stack } from "@mui/system";
+// import Button from "@mui/material/Button";
+// import { Stack } from "@mui/system";
 const Login = () => {
   const userRef = useRef();
   const errRef = useRef();
@@ -60,7 +60,7 @@ const Login = () => {
   };
   return (
     <Grid container className="container" sx={{ dir: "rtl" }}>
-      <Grid item lg={3}>
+      <Grid item xs sm md lg>
         <p
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
@@ -69,7 +69,7 @@ const Login = () => {
           {errMsg}
         </p>
       </Grid>{" "}
-      <Grid item xs={8} lg={6}>
+      <Grid item xs={8} sm={8} lg={6} md={6}>
         <Grid item xs={2} lg={2} sx={{ margin: " auto" }}>
           <img
             src={logo}
@@ -84,8 +84,9 @@ const Login = () => {
         </Grid>
         <Grid
           item
-          xs={5}
-          lg={4}
+          xs={10}
+          lg={5}
+          md={5}
           sx={{
             borderRadius: 3,
             padding: "20px",
@@ -110,7 +111,8 @@ const Login = () => {
               variant="filled"
               required
               color="warning"
-              sx={{ marginTop: 2, color: "white" }}
+              sx={{ marginTop: 2 }}
+              inputProps={{ style: { color: "white" } }}
               InputLabelProps={{
                 style: {
                   color: "white",
@@ -125,13 +127,13 @@ const Login = () => {
             <TextField
               type="password"
               variant="filled"
-              sx={{ marginTop: 3, color: "white" }}
+              sx={{ marginTop: 3 }}
               onChange={(e) => setPwd(e.target.value)}
               value={pwd}
               label="شماره همراه"
               required
-              inputProps={{ style: { color: "red" } }}
-              color="white"
+              inputProps={{ style: { color: "white" } }}
+              color="warning"
               InputLabelProps={{
                 style: {
                   color: "white",
@@ -143,18 +145,24 @@ const Login = () => {
               }}
             />
 
-            <button style={{ background: "transparent" }}>
+            {/* <button style={{ background: "transparent" }}> */}
               <IconButton
-                sx={{ borderRadius: "10px", color: "white" }}
+                type="submit"
+                sx={{
+                  borderRadius: "10px",
+                  color: "white",
+                  background: "transparent",
+                }}
                 aria-label="fingerprint"
               >
                 <span>ورود</span>
                 <Fingerprint />
               </IconButton>
-            </button>
+            {/* </button> */}
           </form>
         </Grid>
       </Grid>
+      <Grid item xs sm md lg></Grid>{" "}
     </Grid>
   );
 };

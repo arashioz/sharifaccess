@@ -82,6 +82,7 @@ const Newlicence = () => {
               value={form.name.value || ""}
               placeholder={form.name.placeHolder}
               onChange={(e) => onChangeHandler(e)}
+              
             />
             <DatePickerPersian label="ساعت ورود" />
             {""}
