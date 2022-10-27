@@ -28,8 +28,9 @@ const Login = () => {
   const { setAuth } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
+
+    await axios
+      .post(
         "user/login",
         JSON.stringify({
           nationalCode: user,
@@ -39,28 +40,35 @@ const Login = () => {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
-      );
-      const accessToken = response?.data?.access_token;
-      setAuth({ user, pwd, accessToken, allData: response?.data });
-      setUser("");
-      setPwd("");
-      navigate("/dashboard");
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("مشکل از سمت سرورو میباشد");
-      } else if (err.response?.status === 400) {
-        setErrMsg("نام کاربری یا رمز عبور اشتباه است");
-      } else if (err.response?.status === 401) {
-        setErrMsg("احراز نشده");
-      } else {
-        setErrMsg("مشکل در اینترنت وحود دارد ");
-      }
-      errRef.current.focus();
-    }
+      )
+      .then((response) => {
+        const accessToken = response?.data?.access_token;
+        setAuth({ user, pwd, accessToken, allData: response?.data });
+        setUser("");
+        setPwd("");
+        navigate("/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
+        if (!err?.response) {
+          setErrMsg("مشکل از سمت سرورو میباشد");
+        } else if (err.response?.status === 400) {
+          setErrMsg("نام کاربری یا رمز عبور اشتباه است");
+        } else if (err.response?.status === 401) {
+          setErrMsg("احراز نشده");
+        } else {
+          setErrMsg(
+            "مشکل در اینترنت وحود دارد در صورت داشتن 'وی پی ان ' قطع نمایید "
+          );
+          errRef.current.focus();
+        }
+      });
   };
+
   return (
     <Grid container className="container" sx={{ dir: "rtl" }}>
-      <Grid item xs sm md lg>
+      <Grid item xs sm md lg></Grid>{" "}
+      <Grid item xs={8} sm={8} lg={6} md={6}>
         <p
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
@@ -68,8 +76,6 @@ const Login = () => {
         >
           {errMsg}
         </p>
-      </Grid>{" "}
-      <Grid item xs={8} sm={8} lg={6} md={6}>
         <Grid item xs={2} lg={2} sx={{ margin: " auto" }}>
           <img
             src={logo}
@@ -145,20 +151,19 @@ const Login = () => {
               }}
             />
 
-            {/* <button style={{ background: "transparent" }}> */}
-              <IconButton
-                type="submit"
-                sx={{
-                  borderRadius: "10px",
-                  color: "white",
-                  background: "transparent",
-                }}
-                aria-label="fingerprint"
-              >
-                <span>ورود</span>
-                <Fingerprint />
-              </IconButton>
-            {/* </button> */}
+            <button
+              // type="submit"
+              style={{
+                color: "white",
+                background: "transparent",
+                display: "inherit",
+                justifyContent: "center",
+                // boxShadow: "1px 1px 1px 1px rgba(117, 117, 117, 0.13) ",
+              }}
+            >
+              <span style={{ fontSize: "20px" }}>ورود</span>
+              <Fingerprint color="white" />
+            </button>
           </form>
         </Grid>
       </Grid>

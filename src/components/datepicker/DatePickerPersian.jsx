@@ -11,7 +11,6 @@ import "./DatePickerPersian.css";
 const useStyles = makeStyles({
   root: {
     fontFamily: "inherit",
-    color: "red",
   },
 });
 export default function DatePickerPersian(props) {
@@ -19,6 +18,9 @@ export default function DatePickerPersian(props) {
 
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
 
+  // function setter() {
+  //   return props.getValue(value._d);
+  // }
   return (
     <div dir="rtl">
       <LocalizationProvider dateAdapter={AdapterJalaali}>
@@ -27,31 +29,32 @@ export default function DatePickerPersian(props) {
           sx={{ margin: 1, direction: "rtl", fontFamily: "vazir " }}
         >
           <MobileDateTimePicker
-            className={classes.root}
+            // className={classes.root}
             label={props.label}
+            required
+            value={value}
+            mask="____/__/__"
             renderInput={(params) => (
               <TextField
+                value={props.value}
                 className="main-datepicker"
                 variant="filled"
-                sx={{ style: { fontFamily: "vazir" } }}
                 InputLabelProps={{
                   style: { fontFamily: "vazir", left: "revert" },
                 }}
                 {...params}
               />
             )}
-            value={value}
-            onChange={(newValue) => {
-              setValue(newValue);
+            // value={props.value}
+            onChange={(newV) => {
+              setValue(newV)
+              props.onChange(newV)
             }}
             componentsProps={{
               root: { className: "custom-root" },
               tabs: ["DateTimePickerTabs"],
-              OpenPickerIcon: [],
               actionBar: {
                 actions: ["today"],
-                dir: "rtl",
-                title: ["sadasd"],
               },
             }}
             closeOnSelect={true}
