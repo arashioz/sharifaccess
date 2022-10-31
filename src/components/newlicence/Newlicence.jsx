@@ -1,5 +1,5 @@
 import { Box } from "@mui/joy";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import DatePickerPersian from "../datepicker/DatePickerPersian";
@@ -8,8 +8,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { makeStyles } from "@mui/styles";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import AdapterJalaali from "@date-io/jalaali";
+import { useFormInputValidation } from "react-form-input-validation";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@material-ui/core";
 
@@ -20,37 +19,90 @@ const useStyles = makeStyles({
   },
 });
 const Newlicence = () => {
-  // const [startDate, getStartDate] = useState(null);
-  // const [endDate, getEnddate] = useState(null);
-  // const classes = useStyles();
-
-  const { auth } = useAuth();
-
-  const [formValues, setFormValues] = useState([
+  const [err, setErr] = useState([
+    {
+      nId: false,
+      name: false,
+      startDate: false,
+      endDate: false,
+    },
+  ]);
+  const [errmsg, setErrMsg] = useState([
     {
       nId: "",
       name: "",
       startDate: "",
-      endDate: dayjs("2014-08-18T21:11:54"),
+      endDate: "",
     },
   ]);
+  const [formValues, setFormValues] = useState([
+    {
+      nId: null,
+      name: null,
+      startDate: null,
+      endDate: null,
+    },
+  ]);
+  const { auth } = useAuth();
+
+  const persianREGX = (value) => {
+    const P_REGEX = new RegExp(/^[\u0600-\u06FF\s]+$/);
+    return P_REGEX.test(value);
+  };
 
   const handleFormChange = (index, event) => {
-    let data = [...formValues];
-    data[index][event.target.name] = event.target.value;
-    setFormValues(data);
-    console.log(index, event.target.name, event.target.value);
-  };
-  const handleFormChangeDatePicker = (index, event, field) => {
+    let { value, name } = event.target;
+
     let data = [...formValues];
 
+    data[index][name] = value;
+
+    setFormValues(data);
+
+    //error
+
+    let errors = [...err];
+    let errorsmessage = [...errmsg];
+
+    if (!persianREGX(value)) {
+      errors[index][name] = true;
+      errorsmessage[index][name] = "لطفا از زبان فارسی استفاده کنید ";
+      setErr(errors);
+      setErrMsg(errorsmessage);
+    } else {
+      errors[index][name] = false;
+      errorsmessage[index][name] = "";
+      setErr(errors);
+      setErrMsg(errorsmessage);
+    }
+  };
+
+  const handleFormChangeDatePicker = (index, event, field) => {
+    let data = [...formValues];
     data[index][field] = changeToISo(event._d);
-    console.log(data);
   };
 
   let addFormFields = () => {
     setFormValues([
       ...formValues,
+      {
+        nId: null,
+        name: null,
+        startDate: null,
+        endDate: null,
+      },
+    ]);
+    setErr([
+      ...err,
+      {
+        nId: false,
+        name: false,
+        startDate: false,
+        endDate: false,
+      },
+    ]);
+    setErrMsg([
+      ...errmsg,
       {
         nId: "",
         name: "",
@@ -72,17 +124,31 @@ const Newlicence = () => {
     return date.toISOString();
   };
 
-  let handleSubmit = async (event, idx) => {
+// const ValidationForm = () => {
+//   const [fields, errors, form] = useFormInputValidation({
+//     customer_name: "",
+//     email_address: "",
+//     phone_number: "",
+//   }, {
+//     customer_name: "required",
+//     email_address: "required|email",
+//     phone_number: "required|numeric|digits_between:10,12"
+//   });
+
+
+  let handleSubmitform = async (event, idx) => {
     event.preventDefault();
     formValues.forEach(async (f, i) => {
-      // console.log(formValues[i].startDate);
       await axios
         .post(
           "/license/create",
           JSON.stringify({
-            startDate: formValues[i].startDate,
+            startDate:
+              formValues[i].startDate ,
             endDate: formValues[i].endDate,
-            employees: [{ name: "ali", nationalCode: "0037548954" }],
+            employees: [
+              { name: formValues[i].name, nationalCode: formValues[i].nId },
+            ],
           }),
           {
             headers: {
@@ -110,17 +176,17 @@ const Newlicence = () => {
     >
       <form
         onSubmit={(e, i) => {
-          console.log(i);
-          handleSubmit(e, i);
+          handleSubmitform(e, i);
         }}
         style={{ display: "flex", flexDirection: "column" }}
       >
         <button onClick={addFormFields}>اضافه کردن فرم</button>
-        <button onClick={handleSubmit}>save</button>
+        <button type="submit">save</button>
 
         {formValues.map((form, index) => (
           <>
             <div
+              key={index}
               style={{
                 margin: "15px",
                 borderRadius: "5px",
@@ -128,22 +194,23 @@ const Newlicence = () => {
               }}
             >
               <Stack
+                key={index}
                 display={"flex"}
                 direction={"row"}
-                justifyContent={"space-around"}
+                sx={{ padding: "0px 10px" }}
+                justifyContent={"space-between"}
               >
                 {""}
                 <h5>{index + 1} - مشخصات فرد مراجعه کننده</h5>
                 {formValues.length > 1 ? (
-                  <Button size="small" onClick={removeFormFields}>
+                  <Button style={{ width: "10px" }} onClick={removeFormFields}>
                     <DeleteIcon color="error"></DeleteIcon>
                   </Button>
                 ) : null}
               </Stack>
               <TextField
-                error={true}
-                key={toString(index)}
-                required
+                error={err[index].nId}
+                helperText={err[index].nId ? errmsg[index].nId : ""}
                 variant="filled"
                 name="nId"
                 inputProps={{ style: { fontFamily: "vazir" } }}
@@ -153,6 +220,8 @@ const Newlicence = () => {
                 onChange={(event) => handleFormChange(index, event)}
               />
               <TextField
+                error={err[index].name}
+                helperText={err[index].name ? errmsg[index].name : ""}
                 required
                 name="name"
                 variant="filled"
@@ -162,6 +231,8 @@ const Newlicence = () => {
                 onChange={(event) => handleFormChange(index, event)}
               />
               <DatePickerPersian
+                error={err[index].startDate}
+                helperText={err[index].startDate ? errmsg[index].startDate : ""}
                 value={form.startDate}
                 onChange={(event) => {
                   handleFormChangeDatePicker(index, event, "startDate");
@@ -169,7 +240,7 @@ const Newlicence = () => {
                 label="ساعت ورود"
               />
               <DatePickerPersian
-                value={form.endDate || ""}
+                value={form.endDate}
                 onChange={(event) => {
                   handleFormChangeDatePicker(index, event, "endDate");
                 }}

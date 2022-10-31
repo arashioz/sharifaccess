@@ -37,7 +37,8 @@ export default function DatePickerPersian(props) {
             renderInput={(params) => (
               <TextField
                 value={props.value}
-                className="main-datepicker"
+                error={props.error}
+                helperText={props.helperText}
                 variant="filled"
                 InputLabelProps={{
                   style: { fontFamily: "vazir", left: "revert" },
@@ -47,12 +48,10 @@ export default function DatePickerPersian(props) {
             )}
             // value={props.value}
             onChange={(newV) => {
-              setValue(newV)
-              props.onChange(newV)
+              setValue(newV);
+              props.onChange(newV);
             }}
             componentsProps={{
-              root: { className: "custom-root" },
-              tabs: ["DateTimePickerTabs"],
               actionBar: {
                 actions: ["today"],
               },
